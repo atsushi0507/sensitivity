@@ -2,3 +2,6 @@ Cutflow/
 __pycache__/
 data/
 .DS_Store
+eventYield
+
+test.txt
