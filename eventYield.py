@@ -41,12 +41,12 @@ labels = {
     "tau": "#font[152]{t}"
 }
 
+lumiInPb = 136.0 * 0.001
 sampleDict = {}
 for line in lines:
     line = line.replace("\n", "")
     dsid, nSG = int(line.split("\t")[0]), float(line.split("\t")[1])
     gluinoMass, chi0Mass, tauStr = getParameters(dsid)
-    #print(gluinoMass, chi0Mass, tauStr)
     if "p" in tauStr:
         tauStr = tauStr.replace("p", "0.")
     if "ns" in tauStr:
@@ -78,6 +78,20 @@ def getValues(key, d):
     values = list(set(tempList))
     values.sort()
     return values
+
+def setRootColorPalette():
+    nRGBs = 5
+    nContours = 255
+    stops = ( 0.00, 0.34, 0.61, 0.84, 1.00 )
+    red   = [ 0.00, 0.00, 0.87, 1.00, 0.51 ]
+    green = [ 0.00, 0.81, 1.00, 0.20, 0.00 ]
+    blue  = [ 0.51, 1.00, 0.12, 0.00, 0.00 ]
+    stopsArray = array('d', stops)
+    redArray   = array('d', red)
+    greenArray = array('d', green)
+    blueArray  = array('d', blue)
+    r.TColor.CreateGradientColorTable(nRGBs, stopsArray, redArray, greenArray, blueArray, nContours,0.5)
+    r.gStyle.SetNumberContours(nContours)
 
 plots = {}
 for gmass in gluinoMassList:
@@ -113,6 +127,7 @@ for t in tauList:
     }
 
 r.gStyle.SetPaintTextFormat(".3f")
+setRootColorPalette()
 
 latexLabel = r.TLatex()
 latexLabel.SetNDC()
@@ -161,13 +176,14 @@ for name in plots:
             print("Bin already has content: ({}, {}): - will now exit!".format(xBin, yBin))
             sys.exit(1)
         histos[name].Fill(xBin, yBin, nSG)
+        #histos[name].SetBinContent(xBin, yBin, nSG)
 
     histos[name].Smooth()
     histos[name].DrawCopy("colz")
     histos[name].SetContour(1, array('d', [3]))
-    histos[name].Draw("cont3 same")
+    histos[name].Draw("cont3 same text")
 
-    ATLASLabel(0.15, 0.945, alabel)
+    ATLASLabel(0.15, 0.945, alabel + "    #font[52]{#sqrt{s}} = 13 TeV, %.1f fb^{-1}"%(lumiInPb*1000))
     latexLabel.DrawLatex(0.205, 0.075, plots[name]["label"])
 
     canvases[name].Update()

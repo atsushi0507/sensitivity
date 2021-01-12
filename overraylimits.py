@@ -19,10 +19,10 @@ if (not os.path.isdir(outputDir)):
     os.makedirs(outputDir)
 
 tauList = [0.01, 0.1, 1., 10.]
-gluinoList = [2000, 2200, 2400, 2600]
-chiList = [10, 50, 200, 450]
+gluinoList = [1600, 1800, 2000, 2200, 2400, 2600]
+chiList = [10, 50, 200, 450, 850, 1250, 1550, 1650, 1750, 1950, 2050, 2150, 2350, 2450, 2550]
 
-lumiInPb = 136000.0
+lumiInPb = 136*1000.0
 
 labels = {}
 labels["tau"] = "#font[42]{#tilde{g}#rightarrowqq}#font[152]{#tilde{c}}_{#font[52]{0}}#font[42]{(#rightarrowqqq)}, fixed #font[152]{t}"

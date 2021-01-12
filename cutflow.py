@@ -19,6 +19,8 @@ r.gROOT.SetBatch()
 binLabels = ["Initial", "pass trig", "pass DRAW", "pass Baseline", "DV < 300 mm", "DV > 4 mm from PV", "chisq < 5", "material veto", "strict material veto", "DV nTrk >= 5", "mDV > 10 GeV"]
 cutflow = r.TH1D("cutflow", "cutflow", 11, 0, 11)
 h_div = r.TH1D("h_div", "h_div", 11, 0, 11)
+cutflow.Sumw2()
+h_div.Sumw2()
 for i, name in enumerate(binLabels):
     cutflow.GetXaxis().SetBinLabel(i+1, name)
     h_div.GetXaxis().SetBinLabel(i+1, name)
@@ -31,7 +33,7 @@ inputFile = "data/mc16d.txt"
 infiles = open(inputFile)
 files = infiles.readlines()
 
-lumiInPb = 136000.0
+lumiInPb = 136.0 * 0.001
 xsFile = open("data/13TeV_gluglu_NNLO_NNLL.json")
 xSecs = json.load(xsFile)
 
@@ -69,7 +71,8 @@ for filename in files:
         passMassCut  = False
 
         mcWeight = tree.mcEventWeight
-        weight = (mcWeight/sumOfWeights) * xSec * lumiInPb
+        #weight = (mcWeight/sumOfWeights) * xSec * lumiInPb
+        weight = mcWeight * xSec * lumiInPb
         cutflow.Fill(0, weight)
         for i in range(len(binLabels)):
             h_div.Fill(i, weight)
@@ -146,4 +149,6 @@ for filename in files:
     c.Print("Cutflow/{}_normalized.pdf".format(outputName))
 
     N = cutflow.GetBinContent(11)
-    outputFile.write("{}\t{}\n".format(dsid, N))
+    initial = cutflow.GetBinContent(1)
+    outputFile.write("{} {} {} {} {} {} {}%\n".format(dsid, str(gluinoMass), str(chi0Mass), str(tau), initial, N, (N/initial)*100))
+    print("{} {} {} {} {} {} {}%".format(dsid, str(gluinoMass), str(chi0Mass), str(tau), initial, N, (N/initial)*100))
