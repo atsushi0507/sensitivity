@@ -184,9 +184,8 @@ for name in plots:
             print("Bin already has content: ({}, {}): - will now exit!".format(xBin, yBin))
             sys.exit(1)
         histos[name].Fill(xBin, yBin, nSG)
-        #histos[name].SetBinContent(xBin, yBin, nSG)
 
-    #histos[name].Smooth()
+    histos[name].Smooth()
     histos[name].DrawCopy("colz")
     histos[name].SetContour(1, array('d', [3]))
     histos[name].Draw("cont3 same text")

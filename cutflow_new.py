@@ -12,7 +12,8 @@ label = "Work in Progress"
 
 r.gROOT.SetBatch()
 
-binLabels = ["Initial", "pass trig", "pass DRAW", "pass Baseline", "DV < 300 mm", "DV > 4 mm from PV", "chisq < 5", "material veto", "strict material veto", "DV nTrk #geq 5", "mDV > 10 GeV"]
+#binLabels = ["Initial", "pass trig", "pass DRAW", "pass Baseline", "DV < 300 mm", "DV > 4 mm from PV", "chisq < 5", "material veto", "strict material veto", "DV nTrk #geq 5", "mDV > 10 GeV"]
+binLabels = ["Initial", "pass trig", "pass DRAW", "pass Baseline", "DV < 300 mm", "DV > 4 mm from PV", "chisq < 5", "material veto", "strict material veto", "pass nTrk & mDV"]
 
 nBins = len(binLabels)
 cutflow = r.TH1D("cutflow", "cutflow", nBins, 0, nBins)
@@ -21,8 +22,7 @@ for i, name in enumerate(binLabels):
 
 filepath = "/Volumes/LaCie/DVJets/mc/signal/mc16d/"
 inputFile = "data/mc16d.txt"
-
-outputDir = "Cutflow"
+outputDir = "Cutflow_new"
 if (not os.path.isdir(outputDir)):
     os.makedirs(outputDir)
 
@@ -34,7 +34,7 @@ histos = {}
 
 r.gStyle.SetPaintTextFormat(".3f")
 
-outputFile = open("data/count.txt", "w")
+outputFile = open("data/count_new.txt", "w")
 for filename in files:
     filename = filename.replace("\n", "")
     infile = r.TFile(filepath + filename, "READ")
@@ -70,8 +70,7 @@ for filename in files:
         passChiSq    = False
         passMaterial = False
         passMaterial_strict = False
-        passNTrk     = False
-        passMass     = False
+        passSR     = False
 
         mcWeight = tree.mcEventWeight
         weight = mcWeight/sumW
@@ -108,14 +107,11 @@ for filename in files:
                 continue
             else:
                 passMaterial_strict = True
-            if (not tree.DV_passNTrkCut[idv]):
+            if (not ((tree.DV_nTracks[idv] >= 5 and tree.DV_m[idv] > 10.) or (tree.DV_nTracks[idv] >= 4 and tree.DV_m[idv] > 20.))):
                 continue
             else:
-                passNTrk = True
-            if (not tree.DV_passMassCut[idv]):
-                continue
-            else:
-                passMass = True
+                passSR = True
+
 
         if (not passFiducial):
             continue
@@ -132,12 +128,9 @@ for filename in files:
         if (not passMaterial_strict):
             continue
         histos[dsid].AddBinContent(9, weight)
-        if (not passNTrk):
+        if (not passSR):
             continue
         histos[dsid].AddBinContent(10, weight)
-        if (not passMass):
-            continue
-        histos[dsid].AddBinContent(11, weight)
 
     histos[dsid].Draw("hist text")
     canvases[dsid].Print("{}/{}.pdf".format(outputDir, name))

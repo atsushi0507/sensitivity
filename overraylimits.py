@@ -19,8 +19,10 @@ if (not os.path.isdir(outputDir)):
     os.makedirs(outputDir)
 
 tauList = [0.01, 0.1, 1., 10.]
-gluinoList = [1600, 1800, 2000, 2200, 2400, 2600]
-chiList = [10, 50, 200, 450, 850, 1250, 1550, 1650, 1750, 1950, 2050, 2150, 2350, 2450, 2550]
+#gluinoList = [1600, 1800, 2000, 2200, 2400, 2600]
+#chiList = [10, 50, 200, 450, 850, 1250, 1550, 1650, 1750, 1950, 2050, 2150, 2350, 2450, 2550]
+gluinoList = [2000, 2200, 2400, 2600]
+chiList = [10, 50, 200, 450]
 
 lumiInPb = 136*1000.0
 
@@ -36,21 +38,21 @@ plots["gluino"] = OrderedDict()
 plots["chi0"] = OrderedDict()
 
 for t in tauList:
-    plots["tau"]["Limit_mg_vs_mchi_fixed_tau_{}ns".format(str(t).replace(".", "p"))] = {
+    plots["tau"]["Yield_mg_vs_mchi_fixed_tau_{}ns".format(str(t).replace(".", "p"))] = {
         "x": "mGluino",
         "y": "mChi0",
         "label": "#font[152]{t} = %s ns"%t
     }
 
 for g in gluinoList:
-    plots["gluino"]["Limit_tau_vs_mchi_fixed_mg_{}GeV".format(g)] = {
+    plots["gluino"]["Yield_tau_vs_mchi_fixed_mg_{}GeV".format(g)] = {
         "x": "tau",
         "y": "mChi0",
         "label": "#font[52]{m_{#tilde{g}}} = %s GeV"%g
     }
 
 for c in chiList:
-    plots["chi0"]["Limit_tau_vs_mgluino_fixed_mchi_{}GeV".format(c)] = {
+    plots["chi0"]["Yield_tau_vs_mgluino_fixed_mchi_{}GeV".format(c)] = {
         "x": "tau",
         "y": "mGluino",
         "label": "#font[52]{m}_{#font[152]{#tilde{c}}_{1}^{0}} = %s GeV"%c
