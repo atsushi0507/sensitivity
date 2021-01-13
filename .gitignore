@@ -1,8 +1,8 @@
 Cutflow/
 __pycache__/
 data/
+data/count.txt
 .DS_Store
 eventYield
 limitPlots
-
-test.txt
+test*

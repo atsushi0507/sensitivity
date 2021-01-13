@@ -1,5 +1,6 @@
 import ROOT as r
 import os
+import json
 from getParams import *
 from array import array
 
@@ -41,23 +42,30 @@ labels = {
     "tau": "#font[152]{t}"
 }
 
-lumiInPb = 136.0 * 0.001
+lumiInPb = 136.0 * 1000
 sampleDict = {}
+
+xsFile = open("data/13TeV_gluglu_NNLO_NNLL.json")
+xSecs = json.load(xsFile)
 for line in lines:
     line = line.replace("\n", "")
-    dsid, nSG = int(line.split("\t")[0]), float(line.split("\t")[1])
+    dsid, initial, nPassed = int(line.split("\t")[0]), float(line.split("\t")[1]), float(line.split("\t")[2])
     gluinoMass, chi0Mass, tauStr = getParameters(dsid)
-    if "p" in tauStr:
-        tauStr = tauStr.replace("p", "0.")
-    if "ns" in tauStr:
-        tauStr = tauStr.replace("ns", "")
-    tau = float(tauStr)
-    sampleDict[dsid] = {"mGluino": gluinoMass, "mChi0": chi0Mass, "tau": tau, "nSG": nSG}
+    lifetimeStr = tauStr
+    if "p" in lifetimeStr:
+        lifetimeStr = lifetimeStr.replace("p", "0.")
+    if "ns" in lifetimeStr:
+        lifetimeStr = lifetimeStr.replace("ns", "")
+    lifetime = float(lifetimeStr)
+    xSec = xSecs[str(gluinoMass)]["xsInPb"]
+    nSG = xSec * lumiInPb * (nPassed / initial)
+    
+    sampleDict[dsid] = {"mGluino": gluinoMass, "mChi0": chi0Mass, "tau": lifetime, "nSG": nSG}
 
     gluinoMassList.add(gluinoMass)
     chi0MassList.add(chi0Mass)
     dMassList.add(gluinoMass-chi0Mass)
-    tauList.add(tau)
+    tauList.add(lifetime)
 
 def getGluinoMassSamples(gluinoMass, d):
     return dict((k, v) for k, v in d.items() if v["mGluino"] == gluinoMass)
@@ -95,7 +103,7 @@ def setRootColorPalette():
 
 plots = {}
 for gmass in gluinoMassList:
-    plots["Limit_tau_vs_mchi_fixed_mg_%sGeV"%gmass] = {
+    plots["Yield_tau_vs_mchi_fixed_mg_%sGeV"%gmass] = {
         "x": "tau",
         "y": "mChi0",
         "label": "#font[42]{#tilde{g}#rightarrowqq}#font[152]{#tilde{c}}_{#font[52]{0}}#font[42]{(#rightarrowqqq), fixed #font[52]{m_{#tilde{g}}} = %s GeV}"%gmass,
@@ -103,7 +111,7 @@ for gmass in gluinoMassList:
     }
 
 for cmass in chi0MassList:
-    plots["Limit_tau_vs_mgluino_fixed_mchi_%sGeV"%cmass] = {
+    plots["Yield_tau_vs_mgluino_fixed_mchi_%sGeV"%cmass] = {
         "x": "tau",
         "y": "mGluino",
         "label": "#font[42]{#tilde{g}#rightarrowqq}#font[152]{#tilde{c}}_{#font[52]{0}}#font[42]{(#rightarrowqqq), fixed #font[52]{m}_{#font[152]{#tilde{c}}_{1}^{0}} = %s GeV}"%cmass,
@@ -111,7 +119,7 @@ for cmass in chi0MassList:
     }
 
 for dmass in dMassList:
-    plots["Limit_tau_vs_mchi_fixed_dm_%sGeV"%dmass] = {
+    plots["Yield_tau_vs_mchi_fixed_dm_%sGeV"%dmass] = {
         "x": "tau",
         "y": "mChi0",
         "label": "#font[42]{#tilde{g}#rightarrowqq}#font[152]{#tilde{c}}_{#font[52]{0}}#font[42]{(#rightarrowqqq), fixed #font[152]{D}#font[52]{m} = %s GeV}"%dmass,
@@ -119,7 +127,7 @@ for dmass in dMassList:
     }
 
 for t in tauList:
-    plots["Limit_mg_vs_mchi_fixed_tau_%sns"%str(t).replace(".", "p")] = {
+    plots["Yield_mg_vs_mchi_fixed_tau_%sns"%str(t).replace(".", "p")] = {
         "x": "mGluino",
         "y": "mChi0",
         "label": "#font[42]{#tilde{g}#rightarrowqq}#font[152]{#tilde{c}}_{#font[52]{0}}#font[42]{(#rightarrowqqq), fixed #font[152]{t} = %s ns}"%t,
@@ -178,12 +186,12 @@ for name in plots:
         histos[name].Fill(xBin, yBin, nSG)
         #histos[name].SetBinContent(xBin, yBin, nSG)
 
-    histos[name].Smooth()
+    #histos[name].Smooth()
     histos[name].DrawCopy("colz")
     histos[name].SetContour(1, array('d', [3]))
     histos[name].Draw("cont3 same text")
 
-    ATLASLabel(0.15, 0.945, alabel + "    #font[52]{#sqrt{s}} = 13 TeV, %.1f fb^{-1}"%(lumiInPb*1000))
+    ATLASLabel(0.15, 0.945, alabel + "    #font[52]{#sqrt{s}} = 13 TeV, %.1f fb^{-1}"%(lumiInPb*0.001))
     latexLabel.DrawLatex(0.205, 0.075, plots[name]["label"])
 
     canvases[name].Update()
