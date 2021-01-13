@@ -59,6 +59,7 @@ for c in chiList:
     }
 
 canvas = r.TCanvas("c", "c", 800, 600)
+canvas.SetTopMargin(0.075)
 canvas.cd()
 
 latexLabel = r.TLatex()
@@ -112,18 +113,10 @@ for plot in plots:
         counter += 1
         legend.AddEntry(contour[0], plots[plot][limit]["label"], "l")
 
-        ATLASLabel(0.15, 0.95, alabel)
+        ATLASLabel(0.15, 0.945, alabel)
         latexLabel.DrawLatex(0.25, 0.075, labels[plot])
 
         legend.Draw()
-
-        canvas.Update()
-        canvas.Print("{}/limits_fixed_{}_nolabel.pdf".format(outputDir, plot))
-
-        if (len(plots[plot])) < 3:
-            latexLabel.DrawLatex(0.5, 0.25, "SR")
-        else:
-            latexLabel.DrawLatex(0.5, 0.25, "SR")
 
         canvas.Update()
         canvas.Print("{}/limits_fixed_{}.pdf".format(outputDir, plot))

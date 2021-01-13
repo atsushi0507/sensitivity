@@ -136,5 +136,5 @@ for filename in files:
     canvases[dsid].Print("{}/{}.pdf".format(outputDir, name))
 
     initial = histos[dsid].GetBinContent(1)
-    passed = histos[dsid].GetBinContent(11)
+    passed = histos[dsid].GetBinContent(10)
     outputFile.write("{}\t{}\t{}\n".format(dsid, initial, passed))

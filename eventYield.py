@@ -14,10 +14,10 @@ alabel = "Work in Progress"
 
 r.gROOT.SetBatch()
 
-inputFile = open("data/count.txt", "r")
+inputFile = open("data/count_new.txt", "r")
 lines = inputFile.readlines()
 
-outputDir = "eventYield"
+outputDir = "eventYield_new"
 if (not os.path.isdir(outputDir)):
     os.makedirs(outputDir)
 
