@@ -8,7 +8,7 @@ sys.path.append("/Users/amizukam/DVJets/atlasstyle")
 from AtlasStyle import *
 from AtlasLabel import *
 SetAtlasStyle()
-label = "Work in Progress"
+label = "Internal"
 
 r.gROOT.SetBatch()
 

@@ -8,7 +8,7 @@ sys.path.append("/Users/amizukam/DVJets/atlasstyle")
 from AtlasStyle import *
 from AtlasLabel import *
 SetAtlasStyle()
-label = "Work in Progress"
+label = "Internal"
 
 r.gROOT.SetBatch()
 
@@ -140,6 +140,7 @@ for filename in files:
         histos[dsid].AddBinContent(11, weight)
 
     histos[dsid].Draw("hist text")
+    ATLASLabel(0.20, 0.955, label)
     canvases[dsid].Print("{}/{}.pdf".format(outputDir, name))
 
     initial = histos[dsid].GetBinContent(1)

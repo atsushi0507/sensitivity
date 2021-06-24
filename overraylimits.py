@@ -9,18 +9,16 @@ sys.path.append("/Users/amizukam/DVJets/atlasstyle")
 from AtlasStyle import *
 from AtlasLabel import *
 SetAtlasStyle()
-alabel = "Work in Progress"
+alabel = "Internal"
 
 r.gROOT.SetBatch()
 
-inputFile = r.TFile("eventYield/eventYield.root", "READ")
+inputFile = r.TFile("eventYield_new/eventYield.root", "READ")
 outputDir = "limitPlots"
 if (not os.path.isdir(outputDir)):
     os.makedirs(outputDir)
 
 tauList = [0.01, 0.1, 1., 10.]
-#gluinoList = [1600, 1800, 2000, 2200, 2400, 2600]
-#chiList = [10, 50, 200, 450, 850, 1250, 1550, 1650, 1750, 1950, 2050, 2150, 2350, 2450, 2550]
 gluinoList = [2000, 2200, 2400, 2600]
 chiList = [10, 50, 200, 450]
 

@@ -10,18 +10,19 @@ sys.path.append("/Users/amizukam/DVJets/atlasstyle")
 from AtlasStyle import *
 from AtlasLabel import *
 SetAtlasStyle()
-alabel = "Work in Progress"
+alabel = "Internal"
 
 r.gROOT.SetBatch()
 
-inputFile = open("data/count_new.txt", "r")
+inputFile = open("data/count.txt", "r")
 lines = inputFile.readlines()
 
-outputDir = "eventYield_new"
+outputDir = "eventYield"
 if (not os.path.isdir(outputDir)):
     os.makedirs(outputDir)
 
 outputFile = r.TFile("{}/eventYield.root".format(outputDir), "UPDATE")
+outputText = open("data/signalCount.txt", "w")
 
 gluinoMassList = set()
 chi0MassList = set()
@@ -61,6 +62,7 @@ for line in lines:
     nSG = xSec * lumiInPb * (nPassed / initial)
     
     sampleDict[dsid] = {"mGluino": gluinoMass, "mChi0": chi0Mass, "tau": lifetime, "nSG": nSG}
+    outputText.write("{}\t{}\n".format(dsid, nSG))
 
     gluinoMassList.add(gluinoMass)
     chi0MassList.add(chi0Mass)
